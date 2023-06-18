@@ -1,4 +1,4 @@
-def process(main, nodes):
+def process(main_g, nodes):
     node_store, main_teams = [], []
     while nodes:
         first_run = True
@@ -7,7 +7,7 @@ def process(main, nodes):
         node_store.append(start_node)
         nodes.discard(start_node)
 
-        current_edges = main[node_store[-1]]
+        current_edges = main_g[node_store[-1]]
         while node_store:
             finale = False
             wrong_vertice = False
@@ -22,7 +22,7 @@ def process(main, nodes):
                 contain_item = False
                 for next_node in current_edges:
                     if next_node in nodes:
-                        if not all(item in main[next_node] for item in team_backup):
+                        if not all(item in main_g[next_node] for item in team_backup):
                             continue
                         if next_node not in common_edges:
                             wrong.add(next_node)
@@ -34,7 +34,7 @@ def process(main, nodes):
                         break
                 if contain_item:
                     finale = False
-                    current_edges = main[vertice]
+                    current_edges = main_g[vertice]
                     common_edges.discard(vertice)
                     if common_edges:
                         copy = common_edges.intersection(current_edges)
@@ -50,7 +50,7 @@ def process(main, nodes):
                     nodes.add(node_store[-1])
                     team_backup.discard(node_store[-1])
                     node_store.pop()
-                    current_edges = main[node_store[-1]]
+                    current_edges = main_g[node_store[-1]]
                 else:
                     current_team.add(node_store.pop())
         main_teams.append(current_team)
@@ -71,13 +71,13 @@ def main():
         return
 
     nodes = set(range(1, num_nodes + 1))
-    main = {i: set() for i in range(1, num_nodes + 1)}
+    main_g = {i: set() for i in range(1, num_nodes + 1)}
     for _ in range(num_edges):
         first_node, second_node = map(int, input().split())
-        main[first_node].add(second_node)
-        main[second_node].add(first_node)
+        main_g[first_node].add(second_node)
+        main_g[second_node].add(first_node)
 
-    if (num_edges == 0 and num_nodes != 2) or not process(main, nodes):
+    if (num_edges == 0 and num_nodes != 2) or not process(main_g, nodes):
         print(-1)
 
 
